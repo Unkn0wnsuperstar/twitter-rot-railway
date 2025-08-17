@@ -2,7 +2,7 @@ import tweepy
 import time
 import os
 import threading
-from flask import Flask
+from flask import flask
 import random
 import os
 import requests
@@ -164,7 +164,7 @@ class AITwitterBot:
             {{
                 "should_retweet": true/false,
                 "score": 0-100,
-                "reason": "brief explanation",
+                "reason": "brief explanation, sometimes based with fact backed resources",
                 "sentiment": "positive/neutral/negative"
             }}
             """
@@ -587,11 +587,7 @@ def test_ai_setup():
     
     return True
 
-if __name__ == "__main__":
-    # Start bot in background thread
-    bot_thread = threading.Thread(target=run_bot, daemon=True)
-    bot_thread.start()
-    
-    # Start Flask server
-    port = int(os.environ.get('PORT', 10000))
-    app.run(host='0.0.0.0', port=port, debug=False)
+def run_bot():
+    while True:
+        print("Bot thread is running...")
+        time.sleep(60)
