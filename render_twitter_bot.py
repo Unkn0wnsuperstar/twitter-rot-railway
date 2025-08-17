@@ -423,7 +423,7 @@ class AITwitterBot:
             
             # Topics for original content
             topics = [
-                "#cybersersecurity",
+            "#cybersecurity",
             "#burkinofaso",
             "#baddies", 
             "#INNIT",
@@ -588,6 +588,38 @@ def test_ai_setup():
     return True
 
 def run_bot():
-    while True:
-        print("Bot thread is running...")
-        time.sleep(60)
+    """Run your existing Twitter bot logic"""
+    try:
+        print("Starting AI Twitter Bot...")
+        
+        # Create your bot instance
+        bot = AITwitterBot()
+        
+        # Run the bot cycle continuously
+        while True:
+            try:
+                print("Running bot cycle...")
+                bot.run_ai_bot_cycle()
+                print("Bot cycle completed, waiting for next cycle...")
+                
+                # Wait between cycles (adjust timing as needed)
+                # 3600 seconds = 1 hour, 1800 = 30 minutes, etc.
+                time.sleep(3600)  # Wait 1 hour between cycles
+                
+            except Exception as cycle_error:
+                print(f"Error in bot cycle: {cycle_error}")
+                print("Waiting 5 minutes before retrying...")
+                time.sleep(300)  # Wait 5 minutes before retrying
+                
+    except Exception as e:
+        print(f"Error starting bot: {e}")
+        import traceback
+        traceback.print_exc()
+        
+# This MUST come after the run_bot function is defined
+if __name__ == "__main__":
+    bot_thread = threading.Thread(target=run_bot, daemon=True)
+    bot_thread.start()
+    
+    port = int(os.environ.get('PORT', 10000))
+    app.run(host='0.0.0.0', port=port, debug=False)
