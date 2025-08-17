@@ -2,7 +2,7 @@ import tweepy
 import time
 import os
 import threading
-from flask import flask
+from Flask import Flask
 import random
 import os
 import requests
