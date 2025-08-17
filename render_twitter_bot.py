@@ -1,5 +1,8 @@
 import tweepy
 import time
+import os
+import threading
+from flask import Flask
 import random
 import os
 import requests
@@ -12,6 +15,18 @@ API_SECRET = os.getenv('1W19qTEWHXZ5lPsGDC950ypAN8id2z34XqpVjooYtnBFL6xAiJ')
 ACCESS_TOKEN = os.getenv('1951146671431131136-PAGq10iFiv7PxwnCiVWztvM3xAvyRD')
 ACCESS_TOKEN_SECRET = os.getenv('qffbFKZgKljssg8dDOcdHIaPugbHL5wuQTdOo3Xp3bYUG')
 BEARER_TOKEN = os.getenv('AAAAAAAAAAAAAAAAAAAAANht3QEAAAAAAfpF7El3B47tArS1qM%2FUCdxIALw%3DX3GjMr6UmPzQQJL1qYZrMRwZxV7Y1ULp2N1sysmmTcN6fJ4SYo')
+
+# Create Flask app (add this after your existing imports)
+app = Flask(__name__)
+
+# Health check endpoints
+@app.route('/')
+def home():
+    return "Twitter Bot is running! ✅"
+
+@app.route('/health')
+def health():
+    return {"status": "healthy", "bot": "active"}
 
 # AI API credentials - you'll need one of these:
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')  # For GPT
@@ -140,7 +155,7 @@ class AITwitterBot:
             
             Consider:
             - Stating the truth on political matters no matter the potential outcome 
-            - Avoiding harsh facts based on popular evidence
+            - Harsh facts based on popular evidence
             - Is it educational or informative?
             - Does it avoid spampromotional content?
             - Is it atleast somewhat relevant to tech/cybersecurity/AI?
@@ -249,7 +264,7 @@ class AITwitterBot:
             
             Generate a response that:
             - Adds value or insight
-            - Is conversational and friendly
+            - Is conversational 
             - Uses appropriate emojis (1-2 max)
             - Sounds natural, not robotic
             """
@@ -299,11 +314,11 @@ class AITwitterBot:
         text_lower = original_tweet.lower()
         
         if 'tutorial' in text_lower or 'learn' in text_lower:
-            return "Thanks for sharing this tutorial! Always love learning new things 📚"
+            return "Thanks U"
         elif 'tip' in text_lower or 'advice' in text_lower:
-            return "Great tip! This is exactly what I needed to hear 💡"
+            return "This is exactly what I needed to hear"
         elif 'question' in text_lower or '?' in original_tweet:
-            return "Interesting question! Would love to see the responses 🤔"
+            return "Would love to see the responses 🤔"
         else:
             return random.choice(templates)
     
@@ -408,11 +423,21 @@ class AITwitterBot:
             
             # Topics for original content
             topics = [
-                "python programming tips",
-                "web development insights", 
-                "AI and machine learning trends",
-                "coding productivity hacks",
-                "tech career advice"
+                "#cybersersecurity",
+            "#burkinofaso",
+            "#baddies", 
+            "#INNIT",
+            "#TALMBOUTINNIT",
+            "#COULDABEENRECORDS",
+            "#TEA",
+            "#Couldabeenhouse",
+            "#juice",
+            "#nickjfuentes",
+            "Ibrahimtraore",
+            "#Onepiece",
+            "#bleach",
+            "#loveisland" 
+            "anti-racism"
             ]
             
             topic = random.choice(topics)
@@ -473,11 +498,11 @@ class AITwitterBot:
         
         # Your interests
         interests = [
-            "#python programming",
+            "#foreign affairs",
             "#AI machinelearning",
-            "#webdevelopment",
-            "#coding tutorial",
-            "#startup advice"
+            "#politics",
+            "#christianity",
+            "#one piece"
         ]
         
         total_activity = 0
@@ -563,14 +588,10 @@ def test_ai_setup():
     return True
 
 if __name__ == "__main__":
-    print("=" * 60)
-    print("       AI-ENHANCED TWITTER BOT")
-    print("=" * 60)
+    # Start bot in background thread
+    bot_thread = threading.Thread(target=run_bot, daemon=True)
+    bot_thread.start()
     
-    if test_ai_setup():
-        bot = AITwitterBot()
-        bot.run_forever()
-    else:
-        print("🚫 Fix setup issues first!")
-        while True:
-            time.sleep(300)
+    # Start Flask server
+    port = int(os.environ.get('PORT', 10000))
+    app.run(host='0.0.0.0', port=port, debug=False)
